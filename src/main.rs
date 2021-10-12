@@ -55,4 +55,5 @@ pub fn main() {
     fs::write("kernel.bin", program.get_binaries().unwrap()[0].clone()).unwrap();
 
     println!("vmx: result: {:?}", result[0]);
+    assert_eq!(result[0], 254);
 }
