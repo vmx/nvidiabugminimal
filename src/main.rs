@@ -12,18 +12,11 @@ use opencl3::{
     types::CL_BLOCKING,
 };
 
-use blstrs::Scalar;
-use ff::Field;
-
 static SOURCE: &str = include_str!("kernel.cl");
 //static SPIRV: &[u8] = include_bytes!("../intel_working.spv");
 
 pub fn main() {
-    //let aa = Scalar::from_u64s_le(&[1,2,3,4]).unwrap();
-    //let aa = Scalar::from_u64s_le(&[5,6,7,8]).unwrap();
-    let aa = Scalar::one();
-    let bb = Scalar::one();
-    let mut result: [Scalar; 1] = [Scalar::zero()];
+    let mut result: [u32; 1] = [0];
 
     let platform = *platform::get_platforms().unwrap().first().unwrap();
     let raw_device = *platform
@@ -46,11 +39,9 @@ pub fn main() {
     let queue = CommandQueue::create_with_properties(&context, raw_device, 0, 0).unwrap();
 
     let result_buffer =
-        Buffer::<Scalar>::create(&context, CL_MEM_READ_ONLY, 1, ptr::null_mut()).unwrap();
+        Buffer::<u32>::create(&context, CL_MEM_READ_ONLY, 1, ptr::null_mut()).unwrap();
 
     ExecuteKernel::new(kernel)
-        .set_arg(&aa)
-        .set_arg(&bb)
         .set_arg(&result_buffer)
         .set_local_work_size(1)
         .set_global_work_size(1)
