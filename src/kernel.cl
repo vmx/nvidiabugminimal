@@ -39,15 +39,10 @@ DEVICE ulong Scalar64_mac_with_carry(ulong a, ulong b, ulong c, ulong *d) {
 // Modular multiplication
 DEVICE Scalar64 Scalar64_mul_default(Scalar64 a, Scalar64 b) {
   Scalar64_limb t[Scalar64_LIMBS + 2] = {0};
-  printf("vmx: t1: "); t_print(t); printf("\n");
-  uchar i = 0;
     Scalar64_limb carry = 0;
-    t[0] = 0xfffffff800000004;
 
     carry = 0;
-    Scalar64_limb m = Scalar64_INV * t[0];
-    printf("vmx: m: %016lx\n", m);
-    Scalar64_mac_with_carry(m, Scalar64_P.val[0], t[0], &carry);
+    Scalar64_mac_with_carry(0x00000003fffffffc, 0xffffffff00000001, 0xfffffff800000004, &carry);
     printf("vmx: carry2: %016lx\n", carry);
 
   Scalar64 result;
