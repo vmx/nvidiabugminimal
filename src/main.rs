@@ -13,7 +13,6 @@ use opencl3::{
 };
 
 static SOURCE: &str = include_str!("kernel.cl");
-//static SPIRV: &[u8] = include_bytes!("../intel_working.spv");
 
 pub fn main() {
     let mut result: [u32; 1] = [0];
@@ -27,9 +26,9 @@ pub fn main() {
     let device = Device::new(raw_device);
     let context = Context::from_device(&device).unwrap();
     let mut program = Program::create_from_source(&context, SOURCE).unwrap();
-    //let mut program = Program::create_from_il(&context, SPIRV).unwrap();
-    //if program.build(context.devices(), "-cl-opt-disable").is_err() {
     if program.build(context.devices(), "").is_err() {
+    // The bug doesn't happen if the optimizations are turned off.
+    //if program.build(context.devices(), "-cl-opt-disable").is_err() {
         let log = program.get_build_log(context.devices()[0]).unwrap();
         println!("error: {}", log);
     }
