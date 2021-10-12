@@ -42,7 +42,7 @@ DEVICE Scalar64 Scalar64_mul_default(Scalar64 a, Scalar64 b) {
   printf("vmx: t1: "); t_print(t); printf("\n");
   uchar i = 0;
     Scalar64_limb carry = 0;
-    t[0] = Scalar64_mac_with_carry(a.val[0], b.val[0], t[0], &carry);
+    t[0] = 0xfffffff800000004;
 
     carry = 0;
     Scalar64_limb m = Scalar64_INV * t[0];
