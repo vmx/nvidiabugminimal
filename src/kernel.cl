@@ -98,7 +98,7 @@ DEVICE Scalar64 Scalar64_mul_default(Scalar64 a, Scalar64 b) {
    */
   Scalar64_limb t[Scalar64_LIMBS + 2] = {0};
   printf("vmx: t1: "); t_print(t); printf("\n");
-  for(uchar i = 0; i < Scalar64_LIMBS; i++) {
+  uchar i = 0;
     Scalar64_limb carry = 0;
     for(uchar j = 0; j < Scalar64_LIMBS; j++)
       t[j] = Scalar64_mac_with_carry(a.val[j], b.val[i], t[j], &carry);
@@ -107,19 +107,6 @@ DEVICE Scalar64 Scalar64_mul_default(Scalar64 a, Scalar64 b) {
     printf("vmx: t3: "); t_print(t); printf("\n");
     printf("vmx: carry1: %016lx\n", carry);
     t[Scalar64_LIMBS + 1] = carry;
-
-    carry = 0;
-    Scalar64_limb m = Scalar64_INV * t[0];
-    Scalar64_mac_with_carry(m, Scalar64_P.val[0], t[0], &carry);
-    for(uchar j = 1; j < Scalar64_LIMBS; j++)
-      t[j - 1] = Scalar64_mac_with_carry(m, Scalar64_P.val[j], t[j], &carry);
-    printf("vmx: t4: "); t_print(t); printf("\n");
-
-    t[Scalar64_LIMBS - 1] = Scalar64_add_with_carry(t[Scalar64_LIMBS], &carry);
-    printf("vmx: t5: "); t_print(t); printf("\n");
-    t[Scalar64_LIMBS] = t[Scalar64_LIMBS + 1] + carry;
-    printf("vmx: t6: "); t_print(t); printf("\n");
-  }
 
   Scalar64 result;
   for(uchar i = 0; i < Scalar64_LIMBS; i++) result.val[i] = t[i];
