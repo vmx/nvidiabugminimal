@@ -24,8 +24,11 @@ void t_print(Scalar64_limb t[]) {
 
 // Returns a * b + c + d, puts the carry in d
 DEVICE ulong Scalar64_mac_with_carry(ulong a, ulong b, ulong c, ulong *d) {
+    printf("vmx: mac_with_carry: a, b, c, d: %016lx %016lx %016lx %016lx\n", a, b, c, *d);
     ulong lo = a * b + c;
+    printf("vmx: mac_with_carry: lo: %016lx\n", lo);
     ulong hi = mad_hi(a, b, (ulong)(lo < c));
+    printf("vmx: mac_with_carry: hi: %016lx\n", lo);
     a = lo;
     lo += *d;
     hi += (lo < a);
