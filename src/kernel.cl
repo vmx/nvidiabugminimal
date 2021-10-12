@@ -4,9 +4,6 @@ ulong Scalar64_mac_with_carry(ulong a, ulong b, ulong c, ulong *d) {
     printf("vmx: mac_with_carry: lo: %016lx\n", lo);
     ulong hi = mad_hi(a, b, (ulong)(lo < c));
     printf("vmx: mac_with_carry: hi: %016lx\n", hi);
-    a = lo;
-    lo += *d;
-    hi += (lo < a);
     *d = hi;
     return lo;
 }
