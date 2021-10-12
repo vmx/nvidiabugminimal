@@ -54,6 +54,6 @@ pub fn main() {
     // Write the current binary for further inspection to disk.
     fs::write("kernel.bin", program.get_binaries().unwrap()[0].clone()).unwrap();
 
-    println!("vmx: result: {:?}", result[0]);
+    println!("result: {}", result[0]);
     assert_eq!(result[0], 254, "The result is expected to be 254, but it was {}.", result[0]);
 }
