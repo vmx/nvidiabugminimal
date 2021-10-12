@@ -1066,9 +1066,9 @@ DEVICE uint Scalar64_get_bits(Scalar64 l, uint skip, uint window) {
 //  *result = Scalar32_add(a, b);
 //}
 //
-KERNEL void test_mul_32(Scalar32 a, Scalar32 b, GLOBAL Scalar32 *result) {
-  *result = Scalar32_mul(a, b);
-}
+//KERNEL void test_mul_32(Scalar32 a, Scalar32 b, GLOBAL Scalar32 *result) {
+//  *result = Scalar32_mul(a, b);
+//}
 //
 //KERNEL void test_sub_32(Scalar32 a, Scalar32 b, GLOBAL Scalar32 *result) {
 //  *result = Scalar32_sub(a, b);
@@ -1102,9 +1102,9 @@ KERNEL void test_mul_32(Scalar32 a, Scalar32 b, GLOBAL Scalar32 *result) {
 //  *result = Scalar64_add(a, b);
 //}
 //
-//KERNEL void test_mul_64(Scalar64 a, Scalar64 b, GLOBAL Scalar64 *result) {
-//  *result = Scalar64_mul(a, b);
-//}
+KERNEL void test_mul_64(Scalar64 a, Scalar64 b, GLOBAL Scalar64 *result) {
+  *result = Scalar64_mul(a, b);
+}
 //
 //KERNEL void test_sub_64(Scalar64 a, Scalar64 b, GLOBAL Scalar64 *result) {
 //  *result = Scalar64_sub(a, b);
