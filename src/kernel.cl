@@ -105,6 +105,7 @@ DEVICE Scalar64 Scalar64_mul_default(Scalar64 a, Scalar64 b) {
     printf("vmx: t2: "); t_print(t); printf("\n");
     t[Scalar64_LIMBS] = Scalar64_add_with_carry(t[Scalar64_LIMBS], &carry);
     printf("vmx: t3: "); t_print(t); printf("\n");
+    printf("vmx: carry1: %016lx\n", carry);
     t[Scalar64_LIMBS + 1] = carry;
 
     carry = 0;
