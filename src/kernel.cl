@@ -110,6 +110,7 @@ DEVICE Scalar64 Scalar64_mul_default(Scalar64 a, Scalar64 b) {
 
     carry = 0;
     Scalar64_limb m = Scalar64_INV * t[0];
+    printf("vmx: m: %016lx\n", marry);
     Scalar64_mac_with_carry(m, Scalar64_P.val[0], t[0], &carry);
     for(uchar j = 1; j < Scalar64_LIMBS; j++)
       t[j - 1] = Scalar64_mac_with_carry(m, Scalar64_P.val[j], t[j], &carry);
