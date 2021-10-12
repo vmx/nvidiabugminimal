@@ -1,5 +1,5 @@
-use std::ptr;
 use std::fs;
+use std::ptr;
 
 use opencl3::{
     command_queue::CommandQueue,
@@ -12,19 +12,18 @@ use opencl3::{
     types::CL_BLOCKING,
 };
 
+use blstrs::Scalar;
+use ff::Field;
+
 static SOURCE: &str = include_str!("kernel.cl");
 //static SPIRV: &[u8] = include_bytes!("../intel_working.spv");
-//static SPIRV: &[u8] = include_bytes!("../intel_broken.spv");
-//static SPIRV: &[u8] = include_bytes!("../working.spv");
-//static SPIRV: &[u8] = include_bytes!("../broken.spv");
-//static SPIRV: &[u8] = include_bytes!("../broken_noprint.spv");
-//static SPIRV: &[u8] = include_bytes!("../working/spirv.bin");
-//static SPIRV: &[u8] = include_bytes!("../broken/spirv.bin");
 
 pub fn main() {
-    let aa: u32 = 972342711;
-    let bb: u32 = 1698717651;
-    let mut result: [u32; 1] = [0];
+    //let aa = Scalar::from_u64s_le(&[1,2,3,4]).unwrap();
+    //let aa = Scalar::from_u64s_le(&[5,6,7,8]).unwrap();
+    let aa = Scalar::one();
+    let bb = Scalar::one();
+    let mut result: [Scalar; 1] = [Scalar::zero()];
 
     let platform = *platform::get_platforms().unwrap().first().unwrap();
     let raw_device = *platform
@@ -36,7 +35,8 @@ pub fn main() {
     let context = Context::from_device(&device).unwrap();
     let mut program = Program::create_from_source(&context, SOURCE).unwrap();
     //let mut program = Program::create_from_il(&context, SPIRV).unwrap();
-    if let Err(_) = program.build(context.devices(), "-cl-opt-disable") {
+    //if program.build(context.devices(), "-cl-opt-disable").is_err() {
+    if program.build(context.devices(), "").is_err() {
         let log = program.get_build_log(context.devices()[0]).unwrap();
         println!("error: {}", log);
     }
@@ -46,9 +46,9 @@ pub fn main() {
     let queue = CommandQueue::create_with_properties(&context, raw_device, 0, 0).unwrap();
 
     let result_buffer =
-        Buffer::<u32>::create(&context, CL_MEM_READ_ONLY, 1, ptr::null_mut()).unwrap();
+        Buffer::<Scalar>::create(&context, CL_MEM_READ_ONLY, 1, ptr::null_mut()).unwrap();
 
-    ExecuteKernel::new(&kernel)
+    ExecuteKernel::new(kernel)
         .set_arg(&aa)
         .set_arg(&bb)
         .set_arg(&result_buffer)
@@ -62,7 +62,7 @@ pub fn main() {
         .unwrap();
 
     // Write the current binary for further inspection to disk.
-    fs::write("intel.bin", program.get_binaries().unwrap()[0].clone()).unwrap();
+    fs::write("kernel.bin", program.get_binaries().unwrap()[0].clone()).unwrap();
 
     println!("vmx: result: {:?}", result[0]);
 }

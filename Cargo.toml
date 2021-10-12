@@ -1,7 +1,9 @@
 [package]
-name = "intelbugminimal"
+name = "nvidiabugminimal"
 version = "0.1.0"
 edition = "2018"
 
 [dependencies]
+blstrs = "0.4.0"
+ff = "0.11.0"
 opencl3 = { version = "0.5.2", features = ["CL_VERSION_2_1", "CL_VERSION_2_2"] }
