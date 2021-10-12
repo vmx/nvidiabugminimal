@@ -2,6 +2,26 @@
   #define GLOBAL __global
   #define KERNEL __kernel
 
+#define Scalar64_limb ulong
+#define Scalar64_LIMBS 4
+#define Scalar64_P ((Scalar64){ { 18446744069414584321, 6034159408538082302, 3691218898639771653, 8353516859464449352 } })
+#define Scalar64_INV 18446744069414584319
+typedef struct { Scalar64_limb val[Scalar64_LIMBS]; } Scalar64;
+
+void Scalar64_print(Scalar64 a) {
+  printf("0x");
+  for (uint i = 0; i < Scalar64_LIMBS; i++) {
+    printf("%016lx", a.val[Scalar64_LIMBS - i - 1]);
+  }
+}
+
+void t_print(Scalar64_limb t[]) {
+  printf("0x");
+  for (uint i = 0; i < Scalar64_LIMBS + 2; i++) {
+    printf("%016lx", t[i]);
+  }
+}
+
 // Returns a * b + c + d, puts the carry in d
 DEVICE ulong Scalar64_mac_with_carry(ulong a, ulong b, ulong c, ulong *d) {
     ulong lo = a * b + c;
@@ -19,12 +39,6 @@ DEVICE ulong Scalar64_add_with_carry(ulong a, ulong *b) {
     *b = lo < a;
     return lo;
 }
-
-#define Scalar64_limb ulong
-#define Scalar64_LIMBS 4
-#define Scalar64_P ((Scalar64){ { 18446744069414584321, 6034159408538082302, 3691218898639771653, 8353516859464449352 } })
-#define Scalar64_INV 18446744069414584319
-typedef struct { Scalar64_limb val[Scalar64_LIMBS]; } Scalar64;
 
 // FinalityLabs - 2019
 // Arbitrary size prime-field arithmetic library (add, sub, mul, pow)
@@ -83,11 +97,14 @@ DEVICE Scalar64 Scalar64_mul_default(Scalar64 a, Scalar64 b) {
    * https://alicebob.cryptoland.net/understanding-the-montgomery-reduction-algorithm/
    */
   Scalar64_limb t[Scalar64_LIMBS + 2] = {0};
+  printf("vmx: t1: "); t_print(t); printf("\n");
   for(uchar i = 0; i < Scalar64_LIMBS; i++) {
     Scalar64_limb carry = 0;
     for(uchar j = 0; j < Scalar64_LIMBS; j++)
       t[j] = Scalar64_mac_with_carry(a.val[j], b.val[i], t[j], &carry);
+    printf("vmx: t2: "); t_print(t); printf("\n");
     t[Scalar64_LIMBS] = Scalar64_add_with_carry(t[Scalar64_LIMBS], &carry);
+    printf("vmx: t3: "); t_print(t); printf("\n");
     t[Scalar64_LIMBS + 1] = carry;
 
     carry = 0;
@@ -95,9 +112,12 @@ DEVICE Scalar64 Scalar64_mul_default(Scalar64 a, Scalar64 b) {
     Scalar64_mac_with_carry(m, Scalar64_P.val[0], t[0], &carry);
     for(uchar j = 1; j < Scalar64_LIMBS; j++)
       t[j - 1] = Scalar64_mac_with_carry(m, Scalar64_P.val[j], t[j], &carry);
+    printf("vmx: t4: "); t_print(t); printf("\n");
 
     t[Scalar64_LIMBS - 1] = Scalar64_add_with_carry(t[Scalar64_LIMBS], &carry);
+    printf("vmx: t5: "); t_print(t); printf("\n");
     t[Scalar64_LIMBS] = t[Scalar64_LIMBS + 1] + carry;
+    printf("vmx: t6: "); t_print(t); printf("\n");
   }
 
   Scalar64 result;
