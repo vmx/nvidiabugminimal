@@ -8,6 +8,6 @@ __kernel void call_mul_hi(__global ulong *result) {
         "madc.hi.u64 %1, %2, %3, 0;\r\n"
         "add.cc.u64 %0, %0, %5;\r\n"
         "addc.u64 %1, %1, 0;\r\n"
-        : "=l"(lo), "=l"(hi) : "l"(a), "l"(b), "l"(c), "l"(*d));
+        : "=l"(lo), "=l"(hi) : "l"(a), "l"(b), "l"(c), "l"(d));
     *result = hi;
 }
